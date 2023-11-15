@@ -1,0 +1,13 @@
+Brotli @ file:///C:/ci_311/brotli-split_1676435766766/work
+certifi @ file:///C:/b/abs_36eb5mzhph/croot/certifi_1690232276943/work/certifi
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1698833585322/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1663625384323/work
+praw @ file:///home/conda/feedstock_root/build_artifacts/praw_1695503763266/work
+prawcore @ file:///home/conda/feedstock_root/build_artifacts/prawcore_1697636127871/work
+PySocks @ file:///D:/bld/pysocks_1661604991356/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1684774241324/work
+update-checker @ file:///home/conda/feedstock_root/build_artifacts/update_checker_1596529541613/work
+urllib3 @ file:///C:/b/abs_aen1x8xlvc/croot/urllib3_1688592717643/work
+websocket-client @ file:///home/conda/feedstock_root/build_artifacts/websocket-client_1696770128353/work
+win-inet-pton @ file:///D:/bld/win_inet_pton_1667051142467/work
+xmltodict @ file:///C:/b/abs_86v81j0_5o/croot/xmltodict_1697086256851/work
