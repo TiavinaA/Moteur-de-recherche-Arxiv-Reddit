@@ -20,13 +20,6 @@ for post in hot_posts:
         docs.append(texteSubr)
         docs_bruts.append(('Reddit', post))
 
-        #Afficher les attributs des Docs Reddit
-# for i, post in enumerate(hot_posts):
-#  # Pour connaître les différentes variables et leur contenu
-#         for k, v in post.__dict__.items():
-#             pass
-#             print(k, ":", v)
-#         break    
         
 
 # Récupération des documents de Arxiv
@@ -36,16 +29,12 @@ url_read = urllib.request.urlopen(url).read()
 data = url_read.decode()
 dico = xmltodict.parse(data)
 arxivArticle = dico['feed']['entry']
-for article in arxivArticle :
-    texte = article['summary']
-    texte = texte.replace("\n", " ")
-    if len(texte) >= 20:
-        docs.append({'identifiant': len(docs) + 1, 'texte': texte, 'origine': 'arxiv'})
 
-# #Mise en forme des données dans un DataFrame
-# allArticlesDf = pd.DataFrame(docs, columns=['identifiant', 'texte', 'origine'])
+for i, entry in enumerate(arxivArticle):
+    if len(entry["summary"]) >= 20:
+        docs.append(entry["summary"].replace("\n", ""))
+        docs_bruts.append(("ArXiv", entry))
 
-# allArticlesDf.to_csv('corpusTD3.csv', sep='\t', index=False)
 
 # # Extraction des textes des dictionnaires
 # textes = [doc['texte'] for doc in docs]
@@ -55,8 +44,9 @@ for article in arxivArticle :
 
 allDocObj = []
 
-#Création d'un objet Document venant d'un post Reddit
+
 for origine, doc in docs_bruts : 
+    #Création d'un objet Document venant d'un post Reddit
     if origine == "Reddit" :
         titre = doc.title.replace("\n", '')
         auteur = str(doc.author)
@@ -67,6 +57,44 @@ for origine, doc in docs_bruts :
         docObj = Document(titre, auteur, date, url, texte)
 
         allDocObj.append(docObj)
+    
+    elif origine == "ArXiv":  # Les fichiers de ArXiv ou de Reddit sont pas formatés de la même manière à ce stade.
+        #Création d'un objet Document venant d'un article Arxiv
+        titre = doc["title"].replace('\n', '')  # On enlève les retours à la ligne
+        try:
+            authors = ", ".join([a["name"] for a in doc["author"]])  # On fait une liste d'auteurs, séparés par une virgule
+        except:
+            authors = doc["author"]["name"]  # Si l'auteur est seul, pas besoin de liste
+        summary = doc["summary"].replace("\n", "")  # On enlève les retours à la ligne
+        date = datetime.datetime.strptime(doc["published"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y/%m/%d")  # Formatage de la date en année/mois/jour avec librairie datetime
+
+        docObj = Document(titre, authors, date, doc["id"], summary)  # Création du Document
+        allDocObj.append(docObj)  # Ajout du Document à la liste.
+
+# Création de l'index de documents
+id2doc = {}
+for i, doc in enumerate(allDocObj):
+    id2doc[i] = doc.titre
+
+#Création d'un dictionnaire id2author poru attrribuer a chaque auteur un identifiant unique
+authors = {}
+aut2id = {}
+id_auteurs_unique = 0
+
+# Création de la liste+index des Auteurs/ affichage des productions des auteurs
+for doc in allDocObj:
+    if doc.auteur not in aut2id:
+        id_auteurs_unique += 1
+        authors[id_auteurs_unique] = Author(doc.auteur)
+        aut2id[doc.auteur] = id_auteurs_unique
+
+    authors[aut2id[doc.auteur]].add(doc.texte)
+    print(authors[aut2id[doc.auteur]])
+
+
+
+
+
 
 
 
