@@ -41,6 +41,9 @@ for i, entry in enumerate(arxivArticle):
 
 # # Création d'une unique chaîne de caractères
 # corpus_string = ' '.join(textes)
+ 
+longueChaineDeCaracteres = " ".join(docs)
+print(docs)
 
 allDocObj = []
 
@@ -81,15 +84,40 @@ authors = {}
 aut2id = {}
 id_auteurs_unique = 0
 
-# Création de la liste+index des Auteurs/ affichage des productions des auteurs
-for doc in allDocObj:
-    if doc.auteur not in aut2id:
-        id_auteurs_unique += 1
-        authors[id_auteurs_unique] = Author(doc.auteur)
-        aut2id[doc.auteur] = id_auteurs_unique
+# Création de la liste+index des Auteurs
+for doc in allDocObj:#On parcours les auteurs de chaque document 
+    if doc.auteur not in aut2id: 
+        id_auteurs_unique += 1 #On génère l'id de l'auteur en ajoutant 1 à chaque fois qu'on croise un nouvel auteur
+        authors[id_auteurs_unique] = Author(doc.auteur)#Création d'un objet dans la liste authors
+        aut2id[doc.auteur] = id_auteurs_unique #on ajoute sont id dans la liste indexée
 
-    authors[aut2id[doc.auteur]].add(doc.texte)
-    print(authors[aut2id[doc.auteur]])
+    authors[aut2id[doc.auteur]].add(doc.texte) #pour chaque document écris par cet auteur, on l'ajoute dans son nb de production
+
+
+#affichage des productions des auteurs et taille moyenne des documents
+# for author_id, author_obj in authors.items():
+#     print(author_obj)
+#     taille_totale_doc = sum(len(doc) for doc in author_obj.production)
+#     print(f"taille moyenne des document  : ",taille_totale_doc/author_obj.ndoc)
+
+corpus = Corpus("Mon corpus")
+# Construction du corpus à partir des documents
+for doc in allDocObj:
+    corpus.add(doc)
+# corpus.showDocSortedByTitle(len(corpus.id2doc))
+
+# print(repr(corpus))
+# corpus.save('corpus.csv')
+# corpus_charge = Corpus('CorpusTest')
+# corpus_charge.load('corpus.csv')
+# print(repr(corpus_charge))
+
+
+
+
+
+
+
 
 
 
