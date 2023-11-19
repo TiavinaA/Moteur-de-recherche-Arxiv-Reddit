@@ -2,17 +2,19 @@ import praw
 import urllib
 import xmltodict
 import pandas as pd
-from classes import *
+from document import *
+from author import *
+from corpus import *
 import datetime
 
 docs = []
 
 #Cette variable contient les documents en bruts pris sur Reddit et Arxiv
 docs_bruts = []
-
+query = "geography"
 #Récupération des documents de Reddit
 reddit = praw.Reddit(client_id='nzJcQWMzVE8P6uYYll0-Bg', client_secret='s3M97y4jzMOiNr1L4rQantxDXnpI_w', user_agent='TD3Python')
-hot_posts = reddit.subreddit('france').hot(limit=100)
+hot_posts = reddit.subreddit(query).hot(limit=100)
 for post in hot_posts:
     texteSubr = post.selftext
     texteSubr = texteSubr.replace("\n", " ")
@@ -23,7 +25,7 @@ for post in hot_posts:
         
 
 # Récupération des documents de Arxiv
-query = "france"
+
 url = 'http://export.arxiv.org/api/query?search_query=all:' + query + '&start=0&max_results=100'
 url_read = urllib.request.urlopen(url).read()
 data = url_read.decode()
@@ -40,10 +42,8 @@ for i, entry in enumerate(arxivArticle):
 # textes = [doc['texte'] for doc in docs]
 
 # # Création d'une unique chaîne de caractères
-# corpus_string = ' '.join(textes)
- 
 longueChaineDeCaracteres = " ".join(docs)
-print(docs)
+# print(docs)
 
 allDocObj = []
 
@@ -57,7 +57,8 @@ for origine, doc in docs_bruts :
         url = "https://www.reddit.com/"+doc.permalink
         texte = doc.selftext.replace("\n", "")
 
-        docObj = Document(titre, auteur, date, url, texte)
+        docObj = RedditDocument(titre, auteur, date, url, texte)
+        docObj.nbCom = doc.num_comments
 
         allDocObj.append(docObj)
     
@@ -65,13 +66,13 @@ for origine, doc in docs_bruts :
         #Création d'un objet Document venant d'un article Arxiv
         titre = doc["title"].replace('\n', '')  # On enlève les retours à la ligne
         try:
-            authors = ", ".join([a["name"] for a in doc["author"]])  # On fait une liste d'auteurs, séparés par une virgule
+            authors = [a["name"] for a in doc["author"]] # On fait une liste d'auteurs, séparés par une virgule
         except:
             authors = doc["author"]["name"]  # Si l'auteur est seul, pas besoin de liste
         summary = doc["summary"].replace("\n", "")  # On enlève les retours à la ligne
         date = datetime.datetime.strptime(doc["published"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y/%m/%d")  # Formatage de la date en année/mois/jour avec librairie datetime
 
-        docObj = Document(titre, authors, date, doc["id"], summary)  # Création du Document
+        docObj = ArxivDocument(titre, authors, date, doc["id"], summary)  # Création du Document
         allDocObj.append(docObj)  # Ajout du Document à la liste.
 
 # Création de l'index de documents
@@ -107,10 +108,8 @@ for doc in allDocObj:
 # corpus.showDocSortedByTitle(len(corpus.id2doc))
 
 # print(repr(corpus))
-# corpus.save('corpus.csv')
-# corpus_charge = Corpus('CorpusTest')
-# corpus_charge.load('corpus.csv')
-# print(repr(corpus_charge))
+corpus.save('corpus.csv')
+
 
 
 

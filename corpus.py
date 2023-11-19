@@ -1,34 +1,5 @@
-import pandas as pd
-# =============== 2.1 : La classe Document ===============
-class Document:
-    # Initialisation des variables de la classe
-    def __init__(self, titre="", auteur="", date="", url="", texte=""):
-        self.titre = titre
-        self.auteur = auteur
-        self.date = date
-        self.url = url
-        self.texte = texte
-
-#Méthode qui affiche toutes les infos d'un Document
-    def __info__(self) :
-        return f"Titre : {self.titre}\tAuteur : {self.auteur}\tDate : {self.date}\tURL : {self.url}\tTexte : {self.texte}\t"
-    
-    def __str__(self) :
-        return f"{self.titre}, par {self.auteur}"
-
-class Author :
-        # Initialisation des variables de la classe
-    def __init__(self, name=""):
-        self.name = name
-        self.ndoc = 0
-        self.production = []
-
-    def add(self, production):
-        self.ndoc += 1
-        self.production.append(production)
-    def __str__(self):
-        return f"Auteur : {self.name}\t# productions : {self.ndoc}"
-    
+from author import *
+from document import *
 class Corpus :
     def __init__(self, nom) :
         self.nom = nom
@@ -71,7 +42,10 @@ class Corpus :
             'titre': [doc.titre for doc in self.id2doc.values()],
             'auteur': [doc.auteur for doc in self.id2doc.values()],
             'date': [doc.date for doc in self.id2doc.values()],
-            'texte': [doc.texte for doc in self.id2doc.values()]
+            'url' : [doc.url for doc in self.id2doc.values()],
+            'texte': [doc.texte for doc in self.id2doc.values()],
+            'type' : [doc.type for doc in self.id2doc.values()],
+            'nbCom': [doc.nbCom if hasattr(doc, 'nbCom') else None for doc in self.id2doc.values()]
         }
         df = pd.DataFrame(data)
 
@@ -84,7 +58,13 @@ class Corpus :
 
         # Ajoute les documents au corpus à partir du DataFrame
         for i, row in df.iterrows():
-            doc = Document(row['titre'], row['auteur'], row['date'], row['texte'])
-            self.add(doc)   
+            if row['type'] == 'Reddit':
+                doc = RedditDocument(row['titre'], row['auteur'], row['date'], row['url'],row['texte'])
+                doc.nbCom = row['nbCom']
+            elif row['type'] == 'Arxiv':
+                doc = ArxivDocument(row['titre'], row['auteur'], row['date'], row['url'],row['texte'])
+
+            self.add(doc)
+
+ 
         
-    
