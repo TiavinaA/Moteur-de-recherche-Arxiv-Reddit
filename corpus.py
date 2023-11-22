@@ -1,5 +1,7 @@
 from author import *
 from document import *
+import pickle
+
 class Corpus :
     def __init__(self, nom) :
         self.nom = nom
@@ -37,34 +39,16 @@ class Corpus :
         return "\n".join(list(map(str, docs)))  
 
     def save(self, file_path):
-        # Crée un DataFrame à partir des données du corpus
-        data = {
-            'titre': [doc.titre for doc in self.id2doc.values()],
-            'auteur': [doc.auteur for doc in self.id2doc.values()],
-            'date': [doc.date for doc in self.id2doc.values()],
-            'url' : [doc.url for doc in self.id2doc.values()],
-            'texte': [doc.texte for doc in self.id2doc.values()],
-            'type' : [doc.type for doc in self.id2doc.values()],
-            'nbCom': [doc.nbCom if hasattr(doc, 'nbCom') else None for doc in self.id2doc.values()]
-        }
-        df = pd.DataFrame(data)
-
-        # Enregistre le DataFrame au format CSV (ou tout autre format de votre choix)
-        df.to_csv(file_path, index=False)  
+        # Serialize the entire corpus object using pickle
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
 
     def load(self, file_path):
-        # Charge le DataFrame depuis le fichier CSV
-        df = pd.read_csv(file_path)
-
-        # Ajoute les documents au corpus à partir du DataFrame
-        for i, row in df.iterrows():
-            if row['type'] == 'Reddit':
-                doc = RedditDocument(row['titre'], row['auteur'], row['date'], row['url'],row['texte'])
-                doc.nbCom = row['nbCom']
-            elif row['type'] == 'Arxiv':
-                doc = ArxivDocument(row['titre'], row['auteur'], row['date'], row['url'],row['texte'])
-
-            self.add(doc)
+        # Deserialize the corpus object from the pickle file
+        with open(file_path, 'rb') as file:
+            loaded_corpus = pickle.load(file)
+            return loaded_corpus
+            
 
  
         

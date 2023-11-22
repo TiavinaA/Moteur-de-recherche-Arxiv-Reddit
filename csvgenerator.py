@@ -38,12 +38,9 @@ for i, entry in enumerate(arxivArticle):
         docs_bruts.append(("ArXiv", entry))
 
 
-# # Extraction des textes des dictionnaires
-# textes = [doc['texte'] for doc in docs]
-
 # # Création d'une unique chaîne de caractères
 longueChaineDeCaracteres = " ".join(docs)
-# print(docs)
+
 
 allDocObj = []
 
@@ -66,7 +63,7 @@ for origine, doc in docs_bruts :
         #Création d'un objet Document venant d'un article Arxiv
         titre = doc["title"].replace('\n', '')  # On enlève les retours à la ligne
         try:
-            authors = [a["name"] for a in doc["author"]] # On fait une liste d'auteurs, séparés par une virgule
+            authors = [a["name"] for a in doc["author"]] # On fait une liste d'auteurs
         except:
             authors = doc["author"]["name"]  # Si l'auteur est seul, pas besoin de liste
         summary = doc["summary"].replace("\n", "")  # On enlève les retours à la ligne
@@ -95,20 +92,14 @@ for doc in allDocObj:#On parcours les auteurs de chaque document
     authors[aut2id[doc.auteur]].add(doc.texte) #pour chaque document écris par cet auteur, on l'ajoute dans son nb de production
 
 
-#affichage des productions des auteurs et taille moyenne des documents
-# for author_id, author_obj in authors.items():
-#     print(author_obj)
-#     taille_totale_doc = sum(len(doc) for doc in author_obj.production)
-#     print(f"taille moyenne des document  : ",taille_totale_doc/author_obj.ndoc)
 
 corpus = Corpus("Mon corpus")
+
 # Construction du corpus à partir des documents
 for doc in allDocObj:
     corpus.add(doc)
-# corpus.showDocSortedByTitle(len(corpus.id2doc))
 
-# print(repr(corpus))
-corpus.save('corpus.csv')
+corpus.save('corpus.pkl')
 
 
 
