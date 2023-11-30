@@ -1,3 +1,3 @@
 from corpusgenerator import *
 from corpus import *
-corpus.stats(10)
+corpus.stats(20)

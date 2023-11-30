@@ -11,7 +11,7 @@ docs = []
 
 #Cette variable contient les documents en bruts pris sur Reddit et Arxiv
 docs_bruts = []
-query = "france"
+query = "Coronavirus"
 #Récupération des documents de Reddit
 reddit = praw.Reddit(client_id='nzJcQWMzVE8P6uYYll0-Bg', client_secret='s3M97y4jzMOiNr1L4rQantxDXnpI_w', user_agent='TD3Python')
 hot_posts = reddit.subreddit(query).hot(limit=100)
