@@ -97,6 +97,8 @@ for doc in allDocObj:
 
 corpus.save('corpus.pkl')
 corpus.load('corpus.pkl')
+corpus.construire_vocabulaire()
+corpus.construire_freq()
 
 
 
